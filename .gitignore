@@ -4,6 +4,7 @@
 !*.h
 !*.s
 !*.cpp
+!*.lib
 Listings
 Objects
 !*.uvprojx
