@@ -1,0 +1,31 @@
+#ifndef __YAW_CONTROL_H__
+#define __YAW_CONTROL_H__
+
+
+
+#include "board.h"
+
+/*底盘跟随模式 底盘跟随模式*/
+#define FOLLOW 0x01
+#define SEPARATION 0x02
+#define YAW_MIDDLE 6850
+#define SUCCESS 0x00
+#define UNSUCCESS !SUCCESS
+
+//Yaw轴内环(速度环)和外环(位置环)PID控制器
+extern PID_Config Yaw_Inner;
+extern PID_Config Yaw_Outer;
+
+/**
+ * @brief Yaw轴开机归位标志
+ *       return SUCCESS
+ *			 return UNSUCCESS
+ */
+extern u8 Yaw_Celib_Flag(void);
+
+void Yaw_InnerControl(void);
+void Yaw_Init(void);
+u8 Chassis_Mode_Checkout(void);
+
+#endif
+
