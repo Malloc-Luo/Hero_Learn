@@ -857,6 +857,11 @@
               <FileType>1</FileType>
               <FilePath>..\Mylib\yaw_control.c</FilePath>
             </File>
+            <File>
+              <FileName>pitch_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Mylib\pitch_control.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

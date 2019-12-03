@@ -6,7 +6,7 @@ volatile uint32_t sysTickUptime=0;
 
 
 /*ÆµÂÊ1000Hz*/
-void TDT_SysTick_Configuration(void)
+int8_t TDT_SysTick_Configuration(void)
 {
 	RCC_ClocksTypeDef  rcc_clocks;
 	uint32_t cnts;
@@ -17,6 +17,7 @@ void TDT_SysTick_Configuration(void)
 
 	SysTick_Config(cnts);
 	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);
+	return 0;
 }
 
 uint32_t GetSysTime_us(void) 
@@ -43,9 +44,16 @@ void DelayMs(uint32_t ms)
 
 void Init_All(void)
 {
+	NVIC_PriorityGroupConfig(NVIC_GROUP);
 	Timer_Init(&MyTimer);
 	TDT_Dbus_Configuration();
 	TDT_SysTick_Configuration();
+	TDT_Cycle_Time_Init();     
 	Can2_Init();
+	I2C1_Soft_Init();  
+	DelayMs(100);                       
+	Mpu6050Top_Init(1000, 40);          	
+	DelayMs(100);                       
+	Mpu6050Top_CalOffset_Gyro();   	
 	
 }

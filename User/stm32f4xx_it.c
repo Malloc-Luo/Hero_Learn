@@ -97,6 +97,7 @@ extern u8 Init_OK;
 
 void SysTick_Handler(void)
 {
+#ifdef OLD_TIMER_MODE
 	MyTimer.for_1000Hz++;
 	MyTimer.for_100Hz++;
 	MyTimer.for_200Hz++;
@@ -104,6 +105,38 @@ void SysTick_Handler(void)
 	MyTimer.for_333Hz++;
 	MyTimer.for_500Hz++;
 	Timer();
+#endif
+	
+#ifdef NEW_TIMER_MODE
+	
+	Mpu6050Top_Read();                       	/*读取mpu6050Top数据*/
+	Mpu6050Top_Data_Prepare();              	/*mpu6050Top准备数据*/
+	
+	if(Timer200Hz>=5)
+		Timer200Hz = 0;
+	
+	switch(Timer200Hz)
+	{
+		case 0:
+			Timer_0();
+			break;
+		case 1:
+			Timer_1();
+			break;
+		case 2:
+			Timer_2();
+			break;
+		case 3:
+			Timer_3();
+			break;
+		case 4:
+			Timer_4();
+			break;
+		default :
+			break;
+	}
+	Timer200Hz ++;
+#endif
 }
 
 /**

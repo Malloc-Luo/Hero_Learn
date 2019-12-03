@@ -3,6 +3,7 @@
 PID_Config Yaw_Inner;
 PID_Config Yaw_Outer;
 
+
 /*底盘模式选择
 * return:
  * FOLLOW 底盘跟随
@@ -42,7 +43,7 @@ u8 Yaw_Celib_Flag(void)
 		counter2++;
 	
 	if(counter1==counter2 && counter1>3)
-			flag = SUCCESS;
+		flag = SUCCESS;
 		
 	if(counter2>=5)
 	{
@@ -94,7 +95,7 @@ void Yaw_Init(void)
 }
 
 
-int16_t left_right_data = 0, left_right_data_last = 0;
+static int16_t left_right_data = 0, left_right_data_last = 0;
 u8 Yaw_Stopflag = 0;
 
 void Yaw_Control(void)
@@ -126,34 +127,35 @@ void Yaw_Control(void)
 	PID_Ctrl(innerSetvalue, innerActualvalue, &Yaw_Inner);
 	
 	can2senddata.yaw_out = (int16_t)Yaw_Inner.out;
-	
-	left_right_data = NDJ6.ch[0];
-	
-	//判断遥控信号是否变化
-	if(left_right_data==0 && left_right_data_last!=0)
+	if(counter>=2)
 	{
-		pidInitFlag = 0;
-		Yaw_Stopflag = 1;
+		left_right_data = NDJ6.ch[0];
+		
+		//判断遥控信号是否变化
+		if(left_right_data==0 && left_right_data_last!=0)
+		{
+			pidInitFlag = 0;
+			Yaw_Stopflag = 1;
+		}
+		if(left_right_data==0 && left_right_data_last==0)
+			Yaw_Stopflag = 0;
+		
+		//模式检查
+		Chassis_Mode = Chassis_Mode_Checkout();
+		
+		Yaw_positionSetvalue -= NDJ6.ch[0] * 0.6 * 0.05;
+		
+		outerSetvalue = Yaw_positionSetvalue;
+		
+		//Yaw轴欧拉角作为外环返回值
+		outerActualvalue = gimbalTopAngle.yaw;
+		
+		//外环控制
+		PID_Ctrl(outerSetvalue, outerActualvalue, &Yaw_Outer);
 	}
-	if(left_right_data==0 && left_right_data_last==0)
-		Yaw_Stopflag = 0;
-	
-	//模式检查
-	Chassis_Mode = Chassis_Mode_Checkout();
-	
-	Yaw_positionSetvalue -= NDJ6.ch[0] * 0.6 * 0.01;
-	
-	outerSetvalue = Yaw_positionSetvalue;
-	
-	//Yaw轴欧拉角作为外环返回值
-	outerActualvalue = gimbalTopAngle.yaw;
-	
-	//外环控制
-	PID_Ctrl(outerSetvalue, outerActualvalue, &Yaw_Outer);
-	
 	counter ++;
-	if(counter>=10000)
-		counter = 1;
+	if(counter>2)
+		counter = 0;
 	
 }
 

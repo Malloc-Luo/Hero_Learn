@@ -152,7 +152,24 @@ void Can2_Send_Data_to_Chassis(can2_senddata *can2data)
 
 void Can2_Send_Data_to_Yaw(can2_senddata *can2data)
 {
+	CanTxMsg Can2TxMsg;
 	
+	Can2TxMsg.RTR = 0;
+	Can2TxMsg.IDE = 0;
+	Can2TxMsg.DLC = 8;
+	
+	Can2TxMsg.StdId = 0x1ff;
+	
+	Can2TxMsg.Data[0] = 0;
+	Can2TxMsg.Data[1] = 0;
+	Can2TxMsg.Data[2] = 0;
+	Can2TxMsg.Data[3] = 0;
+	Can2TxMsg.Data[4] = (u8)(int16_t)(can2data->yaw_out>>8);
+	Can2TxMsg.Data[5] = (u8)(int16_t)(can2data->yaw_out);
+	Can2TxMsg.Data[6] = 0;
+	Can2TxMsg.Data[7] = 0;
+	
+	CAN_Transmit(CAN2, &Can2TxMsg);
 	
 }
 

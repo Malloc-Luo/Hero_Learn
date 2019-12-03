@@ -1,7 +1,5 @@
 #include "timer.h"
 
-TIMERS MyTimer;
-
 volatile float Cycle_T[GET_TIME_NUM][3];
 
 float Get_Cycle_T(u8 item)	
@@ -20,6 +18,10 @@ void TDT_Cycle_Time_Init(void)
 		Get_Cycle_T(i);
 	}
 }
+
+#ifdef USE_OLD_MODE
+
+TIMERS MyTimer;
 
 void Timer_Init(TIMERS *Timer)
 {
@@ -74,10 +76,8 @@ void Timer(void)
 u8 PowerFlag = 0;
 void Timer_1000Hz(void)
 {
-	
 	Mpu6050Top_Read();                       	/*读取mpu6050Top数据*/
 	Mpu6050Top_Data_Prepare();              	/*mpu6050Top准备数据*/
-	
 }
 
 void Timer_500Hz(void)
@@ -86,30 +86,90 @@ void Timer_500Hz(void)
 	loop_time_500hz = Get_Cycle_T(0); 
 	TDT_IMUTopupdate(0.5f *loop_time_500hz, &mpu6050Top.gyro.radps, &mpu6050Top.acc.filter ); /*Top四元数姿态解算*/
 	PowerFlag = NDJ6.ch[4];
-	
-	if(PowerFlag != 1)
-		Chassis_Ctrl();
 }
 
 void Timer_333Hz(void)
 {
-	
 }
 
 void Timer_250Hz(void)
 {
-	
 }
 
 void Timer_200Hz(void)
 {
+	static u8 flag = 0;
+	static u8 cnt = 0;
+	flag = Yaw_Celib_Flag();
 	
+	if(PowerFlag != 1)
+	{
+		if(cnt == 0)
+		{
+			//Yaw轴上电校准
+			if(flag == UNSUCCESS)
+			{
+				Yaw_Init();
+			}
+			else 
+				cnt = 1;
+		}
+		
+		if(cnt)
+			Yaw_Control();
+		
+		Chassis_Ctrl();
+	}
 }
 
 void Timer_100Hz(void)
 {
-	
 }
+#endif
+
+#ifdef USE_NEW_MODE
+
+uint16_t Timer200Hz = 0;
+u8 PowerFlag = 0;
+
+void Timer_0(void)
+{
+	float loop_time_500hz;
+	loop_time_500hz = Get_Cycle_T(0); 
+	TDT_IMUTopupdate(0.5f *loop_time_500hz, &mpu6050Top.gyro.radps, &mpu6050Top.acc.filter ); /*Top四元数姿态解算*/
+	PowerFlag = NDJ6.ch[4];
+}
+
+void Timer_1(void)
+{
+
+}
+
+void Timer_2(void)
+{
+	if(PowerFlag != 1)
+	{
+		if(Yaw_Celib_Flag() == UNSUCCESS)
+			Yaw_Init();
+		else
+			Yaw_Control();
+		
+		Chassis_Ctrl();
+	}
+
+}
+
+void Timer_3(void)
+{
+
+}
+
+void Timer_4(void)
+{
+
+}
+
+#endif
 
 
 

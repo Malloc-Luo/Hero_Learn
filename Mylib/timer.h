@@ -15,6 +15,9 @@
 float Get_Cycle_T(u8);
 void TDT_Cycle_Time_Init(void);
 
+#ifdef OLD_TIMER_MODE
+#define USE_OLD_MODE
+
 typedef struct
 {
 	uint8_t for_1000Hz;
@@ -26,11 +29,8 @@ typedef struct
 	
 }TIMERS;
 
-
-
 extern TIMERS MyTimer;
 
-/*µôµç*/
 extern u8 PowerFlag;
 
 void Timer_Init(TIMERS *);
@@ -41,7 +41,32 @@ void Timer_333Hz(void);
 void Timer_250Hz(void);
 void Timer_200Hz(void);
 void Timer_100Hz(void);
+#endif
+
+#ifdef NEW_TIMER_MODE
+#define USE_NEW_MODE
+
+extern uint16_t Timer200Hz;
+
+void Timer_0(void);
+void Timer_1(void);
+void Timer_2(void);
+void Timer_3(void);
+void Timer_4(void);
+
+#endif
+
 
 #endif 
+
+
+
+
+
+
+
+
+
+
 
 

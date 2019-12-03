@@ -184,17 +184,20 @@ int I2C1_Soft_Mult_Read(u8 SlaveAddress,u8 REG_Address,u8 * ptChar,u8 size)
     
     if(size < 1)
 			return 0;
+		
     if(!I2C1_Soft_Start())
 			return 0;
+		
     I2C1_Soft_SendByte(SlaveAddress);
+		
     if(!I2C1_Soft_WaitAck())
 		{
 			I2C1_Soft_Stop();
 			return 0;
 		}
+		
     I2C1_Soft_SendByte(REG_Address);    
-    I2C1_Soft_WaitAck();
-    
+    I2C1_Soft_WaitAck(); 
     I2C1_Soft_Start();
     I2C1_Soft_SendByte(SlaveAddress+1);
     I2C1_Soft_WaitAck();
@@ -204,8 +207,10 @@ int I2C1_Soft_Mult_Read(u8 SlaveAddress,u8 REG_Address,u8 * ptChar,u8 size)
         *ptChar++ = I2C1_Soft_ReadByte();
         I2C1_Soft_Ack();
     }
+		
     *ptChar++ = I2C1_Soft_ReadByte();
     I2C1_Soft_NoAck();
     I2C1_Soft_Stop();
+		
     return 1;    
 }	

@@ -13,8 +13,8 @@ void Chassis_Motor_Get_Speed(int16_t * Input, int16_t * Output)
 /**
  * µ×ÅÌµç»ú¿ØÖÆ
  */
-float forward_back_data;
-float left_right_data;
+static float forward_back_data;
+static float left_right_data;
 double yaw_rad;
 float sin_rad;
 float cos_rad;
@@ -33,8 +33,10 @@ void Chassis_Ctrl(void)
 	if(yaw_rad <0)
 		yaw_rad = yaw_rad + 2*PI;
 	
-	sin_rad = f_sin(yaw_rad);
-	cos_rad = f_cos(yaw_rad);
+//	sin_rad = f_sin(yaw_rad);
+//	cos_rad = f_cos(yaw_rad);
+	sin_rad = 0;
+	cos_rad = 1;
 
 	if(counter == 0)
 	{
