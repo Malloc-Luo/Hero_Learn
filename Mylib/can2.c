@@ -120,7 +120,6 @@ void CAN2_RX0_IRQHandler(void)
 				
 				can2feedback.yawspeed = (int16_t)((CAN2_Rxmessage.Data[2]<<8) | CAN2_Rxmessage.Data[3]);
 				break;
-			
 		}
 	}
 }
@@ -138,14 +137,29 @@ void Can2_Send_Data_to_Chassis(can2_senddata *can2data)
 	
 	Can2TxMsg.StdId = 0x200;
 	
-	Can2TxMsg.Data[0] = (u8)((int16_t)can2data->motor3508out[0]>>8);
-	Can2TxMsg.Data[1] = (u8)((int16_t)can2data->motor3508out[0]);
-	Can2TxMsg.Data[2] = (u8)((int16_t)can2data->motor3508out[1]>>8);
-	Can2TxMsg.Data[3] = (u8)((int16_t)can2data->motor3508out[1]);
-	Can2TxMsg.Data[4] = (u8)((int16_t)can2data->motor3508out[2]>>8);
-	Can2TxMsg.Data[5] = (u8)((int16_t)can2data->motor3508out[2]);
-	Can2TxMsg.Data[6] = (u8)((int16_t)can2data->motor3508out[3]>>8);
-	Can2TxMsg.Data[7] = (u8)((int16_t)can2data->motor3508out[3]);
+	if(PowerFlag == LOST_POWER)
+	{
+		Can2TxMsg.Data[0] = 0;
+		Can2TxMsg.Data[1] = 0;
+		Can2TxMsg.Data[2] = 0;
+		Can2TxMsg.Data[3] = 0;
+		Can2TxMsg.Data[4] = 0;
+		Can2TxMsg.Data[5] = 0;
+		Can2TxMsg.Data[6] = 0;
+		Can2TxMsg.Data[7] = 0;
+	}
+	else
+	{
+		Can2TxMsg.Data[0] = (u8)((int16_t)can2data->motor3508out[0]>>8);
+		Can2TxMsg.Data[1] = (u8)((int16_t)can2data->motor3508out[0]);
+		Can2TxMsg.Data[2] = (u8)((int16_t)can2data->motor3508out[1]>>8);
+		Can2TxMsg.Data[3] = (u8)((int16_t)can2data->motor3508out[1]);
+		Can2TxMsg.Data[4] = (u8)((int16_t)can2data->motor3508out[2]>>8);
+		Can2TxMsg.Data[5] = (u8)((int16_t)can2data->motor3508out[2]);
+		Can2TxMsg.Data[6] = (u8)((int16_t)can2data->motor3508out[3]>>8);
+		Can2TxMsg.Data[7] = (u8)((int16_t)can2data->motor3508out[3]);
+	}
+	
 	
 	CAN_Transmit(CAN2, &Can2TxMsg);
 }

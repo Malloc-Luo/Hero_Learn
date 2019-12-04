@@ -17,9 +17,16 @@
 typedef struct PID_Controller PID_Config;
 typedef struct PID_Controller * PID_Def;
 
-//Yaw轴内环(速度环)和外环(位置环)PID控制器
+//Yaw轴内环(速度环)和外环(位置环)PID控制器，控制云台
 extern PID_Config Yaw_Inner;
 extern PID_Config Yaw_Outer;
+
+//控制底盘
+extern PID_Config Yaw_Chassis_Inner;
+extern PID_Config Yaw_Chassis_Outer;
+
+//底盘跟随分量
+extern float Chassis_Follow_value;
 
 /**
  * @brief Yaw轴开机归位标志
@@ -30,6 +37,7 @@ extern u8 Yaw_Celib_Flag(void);
 void Yaw_Control(void);
 void Yaw_Init(void);
 u8 Chassis_Mode_Checkout(void);
+void Chassis_Follow_Mode(void);
 
 #endif
 

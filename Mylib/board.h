@@ -1,6 +1,11 @@
 #ifndef __BOARD_H__
 #define __BOARD_H__
-#define NVIC_GROUP   NVIC_PriorityGroup_3
+
+//掉电
+#define LOST_POWER 1
+//
+#define ENABLE_POWER 2
+
 /*
  * 使用新的系统定时器模式或者旧的定时器模式
  * 		0  旧的定时器模式
@@ -19,6 +24,8 @@
 #include "stm32f4xx_gpio.h"
 #include <math.h>
 #include <arm_math.h>
+#include <stdio.h>
+#include <stdlib.h.>
 
 #include "pid.h"
 #include "can2.h"
@@ -35,8 +42,12 @@
 #include "yaw_control.h"
 #include "pitch_control.h"
 
+//吸引火力
+test_Empty(void);
 
-TDT_SysTick_Configuration(void);
+
+
+void TDT_SysTick_Configuration(void);
 void Init_All(void);
 uint32_t GetSysTime_us(void);
 void DelayUs(uint16_t us);

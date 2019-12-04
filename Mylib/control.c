@@ -33,15 +33,15 @@ void Chassis_Ctrl(void)
 	if(yaw_rad <0)
 		yaw_rad = yaw_rad + 2*PI;
 	
-//	sin_rad = f_sin(yaw_rad);
-//	cos_rad = f_cos(yaw_rad);
-	sin_rad = 0;
-	cos_rad = 1;
+	sin_rad = f_sin(yaw_rad);
+	cos_rad = f_cos(yaw_rad);
+//	sin_rad = 0;
+//	cos_rad = 1;
 
 	if(counter == 0)
 	{
 		for(i = 0;i <MOTOR_NUMBER;i++)
-			PID_Init(2.0, 0.1, 0, &Chassis_Motor[i]);
+			PID_Init(4.8, 0.1, 0, &Chassis_Motor[i]);
 	}
 
 	/*处理遥控器信号值*/
@@ -55,10 +55,10 @@ void Chassis_Ctrl(void)
 	else 
 		left_right_data = 0;
 	
-	Motor_Setspeed[0] = -(int16_t)((forward_back_data*cos_rad+left_right_data*(-sin_rad))*0.7+ (left_right_data*cos_rad+forward_back_data*sin_rad)*0.7);
-	Motor_Setspeed[1] = +(int16_t)((forward_back_data*cos_rad+left_right_data*(-sin_rad))*0.7+ (left_right_data*cos_rad+forward_back_data*sin_rad)*0.7);
-	Motor_Setspeed[2] = -(int16_t)((forward_back_data*cos_rad+left_right_data*(-sin_rad))*0.7- (left_right_data*cos_rad+forward_back_data*sin_rad)*0.7);
-	Motor_Setspeed[3] = +(int16_t)((forward_back_data*cos_rad+left_right_data*(-sin_rad))*0.7- (left_right_data*cos_rad+forward_back_data*sin_rad)*0.7);
+	Motor_Setspeed[0] = +((forward_back_data*cos_rad+left_right_data*(-sin_rad))+ (left_right_data*cos_rad+forward_back_data*sin_rad) - Chassis_Follow_value * (4.2f));
+	Motor_Setspeed[1] = -((forward_back_data*cos_rad+left_right_data*(-sin_rad))+ (left_right_data*cos_rad+forward_back_data*sin_rad) - Chassis_Follow_value * (4.2f));
+	Motor_Setspeed[2] = +((forward_back_data*cos_rad+left_right_data*(-sin_rad))- (left_right_data*cos_rad+forward_back_data*sin_rad) - Chassis_Follow_value * (4.2f));
+	Motor_Setspeed[3] = -((forward_back_data*cos_rad+left_right_data*(-sin_rad))- (left_right_data*cos_rad+forward_back_data*sin_rad) - Chassis_Follow_value * (4.2f));
 	
 	/*传入电机实际转速*/
 //	Chassis_Motor_Get_Speed(can2feedback.motor3508, Motor_Actualspeed);
@@ -68,7 +68,7 @@ void Chassis_Ctrl(void)
 	for(i = 0;i<MOTOR_NUMBER;i++)
 	{
 		if(Motor_Actualspeed[i]<=10 && Motor_Actualspeed[i]>=-10)
-			PID_Init(2.0, 0.1, 0, &Chassis_Motor[i]);
+			PID_Init(4.8, 0.1, 0, &Chassis_Motor[i]);
 		
 		PID_Ctrl(Motor_Setspeed[i], Motor_Actualspeed[i], &Chassis_Motor[i]);
 		can2senddata.motor3508out[i] = (int16_t)Chassis_Motor[i].out;

@@ -5,7 +5,7 @@
 typedef struct 
 {
 	int16_t motor3508[4];
-	int16_t motor6020[4];
+//	int16_t motor6020[4];
   int16_t positionYaw;
 	int16_t yawspeed;
 	u8 pho_left;

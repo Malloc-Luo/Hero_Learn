@@ -34,7 +34,7 @@ void Timer_Init(TIMERS *Timer)
 }
 
 void Timer(void)
-{
+{ 
 	if(MyTimer.for_100Hz>=10)
 	{
 		Timer_100Hz();
@@ -43,7 +43,7 @@ void Timer(void)
 	
 	if(MyTimer.for_200Hz>=5)
 	{
-		Timer_200Hz();
+		Timer_200Hz();  
 		MyTimer.for_200Hz = 0;
 	}
 	
@@ -73,7 +73,7 @@ void Timer(void)
 
 }
 
-u8 PowerFlag = 0;
+ u8 PowerFlag = 0;
 void Timer_1000Hz(void)
 {
 	Mpu6050Top_Read();                       	/*¶ÁÈ¡mpu6050TopÊý¾Ý*/
@@ -90,19 +90,11 @@ void Timer_500Hz(void)
 
 void Timer_333Hz(void)
 {
-}
-
-void Timer_250Hz(void)
-{
-}
-
-void Timer_200Hz(void)
-{
 	static u8 flag = 0;
 	static u8 cnt = 0;
 	flag = Yaw_Celib_Flag();
 	
-	if(PowerFlag != 1)
+	if(PowerFlag != LOST_POWER)
 	{
 		if(cnt == 0)
 		{
@@ -118,8 +110,22 @@ void Timer_200Hz(void)
 		if(cnt)
 			Yaw_Control();
 		
-		Chassis_Ctrl();
+		if(Chassis_Mode_Checkout() == FOLLOW)
+			Chassis_Follow_Mode();
+		else
+			Chassis_Follow_value = 0;
 	}
+	
+	Chassis_Ctrl();
+}
+
+void Timer_250Hz(void)
+{
+}
+
+void Timer_200Hz(void)
+{
+	
 }
 
 void Timer_100Hz(void)
