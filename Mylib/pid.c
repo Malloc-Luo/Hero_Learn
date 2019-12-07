@@ -53,7 +53,7 @@ void PID_Ctrl(float Setvalue, float Actualvalue, PID_Def pid)
 	
 	pid->PID_Integral = LIMIT(pid->PID_Integral, -pid->IntegralMax, pid->IntegralMax);
 	
-	pid->out = (int16_t)(pid->Kp *pid->PID_Error + pid->Ki * pid->PID_Integral + pid->Kd * (pid->PID_LastError - pid->PID_Error));
+	pid->out = (pid->Kp *pid->PID_Error + pid->Ki * pid->PID_Integral + pid->Kd * (pid->PID_LastError - pid->PID_Error));
 	
 	pid->PID_LastError = pid->PID_Error;
 	

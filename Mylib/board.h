@@ -26,15 +26,17 @@
 #include <arm_math.h>
 #include <stdio.h>
 #include <stdlib.h.>
+#include <stdint.h>
 
+#include "friction.h"
 #include "pid.h"
 #include "can2.h"
 #include "can1.h"
-#include "control.h"
 #include "TDT_hero.h"
 #include "dbus.h"
 #include "mymath.h"
 #include "timer.h"
+#include "control.h"
 #include "fdbus.h"
 #include "myiic.h"
 #include "mpu6050.h"

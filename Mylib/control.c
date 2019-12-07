@@ -1,5 +1,7 @@
 #include "control.h"
 
+PID_Config Chassis_Motor[4];
+
 void Chassis_Motor_Get_Speed(int16_t * Input, int16_t * Output)
 {
   u8 i = 0;
@@ -18,7 +20,6 @@ static float left_right_data;
 double yaw_rad;
 float sin_rad;
 float cos_rad;
-PID_Config Chassis_Motor[4];
 
 void Chassis_Ctrl(void)
 {

@@ -3,6 +3,7 @@
 /*----CAN1_TX-----PA12----*/
 /*----CAN1_RX-----PA11----*/
 can1_feedback can1Feedback;
+can1_senddata can1Senddata;
 
 void CAN1_Init(void)
 {
@@ -87,10 +88,12 @@ void CAN1_RX0_IRQHandler(void)
 			can1Feedback.frition3508[1] = (int16_t)((Can1RxMsg.Data[2]<<8) | (Can1RxMsg.Data[3]));
 			break;
 		
-		case 0x207:
+		//拨弹摩擦轮
+		case 0x203:
 			can1Feedback.TriggerPosition_now = (int16_t)((Can1RxMsg.Data[0]<<8) | (Can1RxMsg.Data[1]));
 			can1Feedback.TriggerSpeed = (int16_t)((Can1RxMsg.Data[2]<<8) | (Can1RxMsg.Data[3]));
-			/*过圈处理*/
+			
+		/*过圈处理*/
 			if(can1Feedback.TriggerPosition_now-trigger_positionlast>4096)
 			{
 				trigger_round--;
@@ -115,6 +118,52 @@ void CAN1_RX0_IRQHandler(void)
 		default:
 			break;
 	}
+}
+
+void CAN1_TX_IRQHandler(void)
+{
+    if (CAN_GetITStatus(CAN1,CAN_IT_TME)!= RESET)
+    {
+        CAN_ClearITPendingBit(CAN1,CAN_IT_TME);
+    }
+}
+
+
+void Can1_Send_Data_to_Frict(can1_senddata *can1data)
+{
+	CanTxMsg can1txmsg;
+	
+	can1txmsg.DLC = 8;
+	can1txmsg.IDE = 0;
+	can1txmsg.RTR = 0;
+	can1txmsg.StdId = 0x200;	
+	can1txmsg.Data[0] = (u8)((int16_t)can1data->motor3508right_out>>8);
+	can1txmsg.Data[1] = (u8)((int16_t)can1data->motor3508right_out);
+	can1txmsg.Data[2] = (u8)((int16_t)can1data->motor3508left_out>>8);
+	can1txmsg.Data[3] = (u8)((int16_t)can1data->motor3508left_out);
+	
+	can1txmsg.Data[4] = (u8)((int16_t)can1data->motorup_out>>8);
+	can1txmsg.Data[5] = (u8)((int16_t)can1data->motorup_out);
+	
+	if(left_right_frict_power_flag == BOTTOM)
+	{
+		can1txmsg.Data[0] = 0;
+		can1txmsg.Data[1] = 0;
+		can1txmsg.Data[2] = 0;
+		can1txmsg.Data[3] = 0;
+	}
+	
+	if(up_frict_power_flag == BOTTOM)
+	{
+		can1txmsg.Data[4] = 0;
+		can1txmsg.Data[5] = 0;
+	}
+	
+	can1txmsg.Data[6] = 0;
+	can1txmsg.Data[7] = 0;
+	
+	CAN_Transmit(CAN1, &can1txmsg);
+
 }
 
 

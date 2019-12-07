@@ -1,8 +1,10 @@
 #include "board.h"
 
 int shootflag=0;
+
 int main(void)
-{	
+{
+	
 	Init_All();
 	
  	while(1)

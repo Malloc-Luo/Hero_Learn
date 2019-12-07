@@ -23,7 +23,7 @@ struct PID_Controller
 	float PID_Ctrl;
 	float IntegralMax;
 	float OutMax;
-	int16_t out;
+	float out;
 };
 
 typedef struct PID_Controller PID_Config;

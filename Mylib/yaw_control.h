@@ -1,8 +1,6 @@
 #ifndef __YAW_CONTROL_H__
 #define __YAW_CONTROL_H__
 
-
-
 #include "board.h"
 
 /*底盘跟随模式 底盘跟随模式*/
@@ -12,7 +10,6 @@
 #define YAW_MIDDLE 2700
 #define SUCCESS 0x00
 #define UNSUCCESS !SUCCESS
-
 
 typedef struct PID_Controller PID_Config;
 typedef struct PID_Controller * PID_Def;

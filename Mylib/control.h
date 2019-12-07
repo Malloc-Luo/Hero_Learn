@@ -17,11 +17,12 @@
 #define MID_PITCH_ANGLE      4060
 
 typedef struct PID_Controller PID_Config;
-typedef struct PID_Controller * PID_Def;
+typedef struct PID_Controller *  PID_Def;
 
-extern PID_Config Chassis_Motor[4];
+//extern PID_Config Chassis_Motor[4];
 
-void Chassis_Init(PID_Config * );
+void Chassis_Init(PID_Config * pid);
+
 void Chassis_Ctrl(void);
 
 #endif

@@ -862,6 +862,11 @@
               <FileType>1</FileType>
               <FilePath>..\Mylib\pitch_control.c</FilePath>
             </File>
+            <File>
+              <FileName>friction.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Mylib\friction.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

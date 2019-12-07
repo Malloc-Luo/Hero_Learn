@@ -1,10 +1,7 @@
 #ifndef __TIMER_H__
 #define __TIMER_H__ 
-#include "stdint.h"
-#include "can2.h"
+
 #include "board.h"
-#include "stm32f4xx.h"
-#include "stm32f4xx_conf.h"
 
 #define NOW 0
 #define OLD 1
