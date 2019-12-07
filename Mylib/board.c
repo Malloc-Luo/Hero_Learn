@@ -5,17 +5,6 @@
 
 volatile uint32_t sysTickUptime=0;
 
-
-//////////////////////////////////
-///没有任何作用，只是转移错误
-int8_t test_Empty(void)
-{
-	return 0;
-}
-/////////////////////////////////
-
-
-
 /*频率1000Hz*/
 void TDT_SysTick_Configuration(void)
 {
@@ -29,8 +18,9 @@ void TDT_SysTick_Configuration(void)
 	SysTick_Config(cnts);
 	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);
 	
-//	return 0;
 }
+
+
 
 uint32_t GetSysTime_us(void) 
 {
@@ -58,9 +48,9 @@ void Init_All(void)
 {
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_3);
 	
-//#ifdef OLD_TIMER_MODE
+#ifdef OLD_TIMER_MODE
 	Timer_Init(&MyTimer);
-//#endif
+#endif
 	
 	TDT_Dbus_Configuration();
 	TDT_SysTick_Configuration();

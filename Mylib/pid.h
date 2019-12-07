@@ -1,9 +1,11 @@
 #ifndef __PID_H__
 #define __PID_H__
-//#include "board.h"
+
 #include "stm32f4xx.h"
 #include "stdlib.h"
+#include "stdio.h"
 #include "control.h"
+#include "stdint.h"
 
 #define OUT 0
 #define INT 1
@@ -22,7 +24,6 @@ struct PID_Controller
 	float IntegralMax;
 	float OutMax;
 	int16_t out;
-	
 };
 
 typedef struct PID_Controller PID_Config;
@@ -38,7 +39,6 @@ void PID_Init(KP, KI, KD, PID_Config * pid);
 void PID_Ctrl(float ,float ,PID_Config * pid);
 
 extern float LIMIT(float, float, float);
-
 
 #endif
 

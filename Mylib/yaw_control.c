@@ -167,6 +167,7 @@ void Yaw_Control(void)
 	
 }
 
+
 /**
  * @brief 底盘跟随模式
  * 				* 对云台位置环，读取MPU6050数据，控制Yaw轴电机
@@ -187,8 +188,8 @@ void Chassis_Follow_Mode(void)
 	
 	if(pidInitFlag == 0)
 	{
-		PID_Init(1.4, 0.0, 0.0, &Yaw_Chassis_Inner);
-		PID_Init(1.4, 0.0, 0.0, &Yaw_Chassis_Outer);
+		PID_Init(1.4, 0.1, 0.0, &Yaw_Chassis_Inner);
+		PID_Init(1.4, 0.1, 0.0, &Yaw_Chassis_Outer);
 		pidInitFlag = 1;
 	}
 	
@@ -202,7 +203,6 @@ void Chassis_Follow_Mode(void)
 	if(counter>0)
 	{
 		outerActualvalue = can2feedback.positionYaw;
-		
 		
 		PID_Ctrl(outerSetvalue, outerActualvalue, &Yaw_Chassis_Outer);
 	}

@@ -42,16 +42,12 @@
 #include "yaw_control.h"
 #include "pitch_control.h"
 
-//ÎüÒý»ðÁ¦
-test_Empty(void);
 
-
-
-void TDT_SysTick_Configuration(void);
 void Init_All(void);
 uint32_t GetSysTime_us(void);
 void DelayUs(uint16_t us);
 void DelayMs(uint32_t ms);
+void TDT_SysTick_Configuration(void);
 
 #endif
 
