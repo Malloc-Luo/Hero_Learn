@@ -16,9 +16,9 @@ PID_Config Yaw_Chassis_Outer;
 u8 Chassis_Mode_Checkout(void)
 {
 	u8 Mode;
-	if(NDJ6.ch[5] == 2)
+	if(NDJ6.ch[5] == TOP)
 		Mode = FOLLOW;
-	if(NDJ6.ch[5] == 3)
+	if(NDJ6.ch[5] == MIDDLE)
 		Mode = SEPARATION;
 	
 	return Mode;
@@ -76,7 +76,7 @@ void Yaw_Init(void)
 	float outerSetvalue = YAW_MIDDLE;
 	float outerActualvalue = 0;
 	float innerSetvalue, innerActualvalue;
-	u8 counter = 0;
+	static u8 counter = 0;
 	
 	if(YawPidflag == 0)
 	{
@@ -91,15 +91,20 @@ void Yaw_Init(void)
 	/*内环控制*/
 	PID_Ctrl(innerSetvalue, innerActualvalue, &Yaw_Inner);
 	
-	can2senddata.yaw_out = (int16_t)Yaw_Inner.out;
+	can2senddata_yaw.yaw_out = (int16_t)Yaw_Inner.out;
 	
-	if(++counter >= 2)
+	if(++counter >= 1)
 	{
 		outerActualvalue = (float)can2feedback.positionYaw;
 	
 		/*外环控制*/
 		PID_Ctrl(outerSetvalue, outerActualvalue, &Yaw_Outer);
 	}
+	
+	counter++;
+	counter = ((counter>=2)? 0:counter);
+	
+	Can2_Send_Data_to_Yaw(&can2senddata_yaw);
 }
 
 
@@ -133,8 +138,8 @@ void Yaw_Control(void)
 	//内环控制
 	PID_Ctrl(innerSetvalue, innerActualvalue, &Yaw_Inner);
 	
-	can2senddata.yaw_out = (int16_t)Yaw_Inner.out;
-	if(counter>=2)
+	can2senddata_yaw.yaw_out = (int16_t)Yaw_Inner.out;
+	if(counter>=1)
 	{
 		left_right_data = NDJ6.ch[0];
 		
@@ -162,9 +167,10 @@ void Yaw_Control(void)
 		
 	}
 	counter ++;
-	if(counter>2)
+	if(counter>1)
 		counter = 0;
 	
+	Can2_Send_Data_to_Yaw(&can2senddata_yaw);
 }
 
 

@@ -3,7 +3,8 @@
 /*----CAN1_TX-----PA12----*/
 /*----CAN1_RX-----PA11----*/
 can1_feedback can1Feedback;
-can1_senddata can1Senddata;
+can1_senddata can1Senddata_frict;
+can1_senddata can1Senddata_pitch;
 
 void CAN1_Init(void)
 {
@@ -144,16 +145,8 @@ void Can1_Send_Data_to_Frict(can1_senddata *can1data)
 	
 	can1txmsg.Data[4] = (u8)((int16_t)can1data->motorup_out>>8);
 	can1txmsg.Data[5] = (u8)((int16_t)can1data->motorup_out);
-	
-	if(left_right_frict_power_flag == BOTTOM)
-	{
-		can1txmsg.Data[0] = 0;
-		can1txmsg.Data[1] = 0;
-		can1txmsg.Data[2] = 0;
-		can1txmsg.Data[3] = 0;
-	}
-	
-	if(up_frict_power_flag == BOTTOM)
+
+	if(up_frict_power_flag == BOTTOM || up_frict_power_flag == NDJLOST)
 	{
 		can1txmsg.Data[4] = 0;
 		can1txmsg.Data[5] = 0;
@@ -164,6 +157,27 @@ void Can1_Send_Data_to_Frict(can1_senddata *can1data)
 	
 	CAN_Transmit(CAN1, &can1txmsg);
 
+}
+
+void Can1_Send_Data_to_Pitch(can1_senddata *can1data)
+{
+	CanTxMsg can1txmsg;
+	
+	can1txmsg.DLC = 8;
+	can1txmsg.IDE = 0;
+	can1txmsg.RTR = 0;
+	can1txmsg.StdId = 0x1ff;
+	
+	can1txmsg.Data[0] = (u8)((int16_t)can1data->pitchout_left>>8);
+	can1txmsg.Data[1] = (u8)((int16_t)can1data->pitchout_left);
+	can1txmsg.Data[2] = (u8)((int16_t)can1data->pitchout_right>>8);
+	can1txmsg.Data[3] = (u8)((int16_t)can1data->pitchout_right);
+	can1txmsg.Data[4] = 0;
+	can1txmsg.Data[5] = 0;
+	can1txmsg.Data[6] = 0;
+	can1txmsg.Data[7] = 0;
+	
+	CAN_Transmit(CAN1, &can1txmsg);
 }
 
 

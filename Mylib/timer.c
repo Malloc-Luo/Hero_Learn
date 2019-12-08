@@ -90,30 +90,47 @@ void Timer_500Hz(void)
 
 void Timer_333Hz(void)
 {
-	static u8 flag = 0;
+	static u8 yaw_flag = 0, yaw_init_flag = 0;
+	static u8 pitch_flag = 0, pitch_init_flag = 0;
 	static u8 cnt = 0;
-	flag = Yaw_Celib_Flag();
+	yaw_flag = Yaw_Celib_Flag();
+	pitch_flag = Pitch_Celib_Flag();
 	
-	if(PowerFlag != LOST_POWER)
+	if(PowerFlag != TOP)
 	{
-		if(cnt == 0)
+		if(yaw_init_flag == 0)
 		{
-			//Yaw轴上电校准
-			if(flag == UNSUCCESS)
-			{
+			if(yaw_flag == UNSUCCESS)
 				Yaw_Init();
-			}
-			else 
-				cnt = 1;
+			else
+				yaw_init_flag = 1;
+		}
+		else
+		{
+			Yaw_Control();
 		}
 		
-		if(cnt)
-			Yaw_Control();
+		if(pitch_init_flag == 0)
+		{
+			if(pitch_flag == UNSUCCESS)
+				Pitch_Init();
+			else
+				pitch_init_flag = 1;
+		}
+		else
+		{
+			Pitch_Control();
+		}
 		
 		if(Chassis_Mode_Checkout() == FOLLOW)
 			Chassis_Follow_Mode();
 		else
 			Chassis_Follow_value = 0;
+	}
+	else
+	{
+		pitch_init_flag = 1;
+		yaw_init_flag = 1;
 	}
 	
 	Chassis_Ctrl();

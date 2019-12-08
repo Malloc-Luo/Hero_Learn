@@ -7,6 +7,11 @@
 #define ENABLE_POWER 2
 
 /*
+ * 宏定义骚操作，简化
+ */
+#define SetGPIO(GPIOx, GPIO_Pin_x) {}
+
+/*
  * 使用新的系统定时器模式或者旧的定时器模式
  * 		0  旧的定时器模式
  * 		1	 新的定时器模式

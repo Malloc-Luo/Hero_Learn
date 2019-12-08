@@ -54,9 +54,9 @@ void Init_All(void)
 	
 	TDT_Dbus_Configuration();
 	TDT_SysTick_Configuration();
-	TDT_Cycle_Time_Init();     
 	Can2_Init();
 	CAN1_Init();
+	TDT_Cycle_Time_Init();     
 	I2C1_Soft_Init();  
 	DelayMs(100);                       
 	Mpu6050Top_Init(1000, 40);          	

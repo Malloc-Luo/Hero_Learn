@@ -82,7 +82,9 @@ void CAN2_TX_IRQHandler(void)
 
 CanRxMsg CAN2_Rxmessage;     //can原始数据
 can2_feedback can2feedback;  //can接收处理数据
-can2_senddata can2senddata;  //can发送数据
+can2_senddata can2senddata_chassis;
+can2_senddata can2senddata_yaw;
+
 int16_t real_yaw;
 int yaw_offset=4091;
 

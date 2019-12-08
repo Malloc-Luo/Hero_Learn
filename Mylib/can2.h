@@ -24,7 +24,8 @@ typedef struct
 }can2_senddata;
 
 extern can2_feedback can2feedback;
-extern can2_senddata can2senddata;
+extern can2_senddata can2senddata_chassis;
+extern can2_senddata can2senddata_yaw;
 
 void Can2_Init(void);
 void Can2_Send_Data_to_Chassis(can2_senddata *);

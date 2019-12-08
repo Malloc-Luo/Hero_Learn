@@ -71,14 +71,14 @@ void Chassis_Ctrl(void)
       if(Motor_Actualspeed[i]<=10 && Motor_Actualspeed[i]>=-10)
         PID_Init(4.8, 0.1, 0, &Chassis_Motor[i]);
 
-      PID_Ctrl(Motor_Setspeed[i], Motor_Actualspeed[i], &Chassis_Motor[i]);
-      can2senddata.motor3508out[i] = (int16_t)Chassis_Motor[i].out;
+      PID_Ctrl(Motor_Setspeed[i], Motor_Actualspeed[i], &Chassis_Motor[i]); 
+      can2senddata_chassis.motor3508out[i] = (int16_t)Chassis_Motor[i].out;
     }
 
   if(counter>=10000)
     counter = 1;
 
   counter ++;
-  Can2_Send_Data_to_Chassis(&can2senddata);
+  Can2_Send_Data_to_Chassis(&can2senddata_chassis);
 
 }

@@ -4,7 +4,7 @@
 #include "stm32f4xx.h"
 #include "stdlib.h"
 #include "stdio.h"
-#include "control.h"
+//#include "control.h"
 #include "stdint.h"
 
 #define OUT 0
@@ -26,6 +26,15 @@ struct PID_Controller
 	float out;
 };
 
+///ฒฮสýต๗สิ
+typedef struct
+{
+	float Kp;
+	float Ki;
+	float Kd;
+	
+}PID_Per;
+
 typedef struct PID_Controller PID_Config;
 typedef struct PID_Controller * PID_Def;
 
@@ -37,6 +46,10 @@ typedef int16_t MODE;
 void PID_Init(KP, KI, KD, PID_Config * pid);
 
 void PID_Ctrl(float ,float ,PID_Config * pid);
+
+void PID_Outmax_Set(uint16_t ,PID_Def );
+
+void PID_Integralmax_Set(uint16_t, PID_Def );
 
 extern float LIMIT(float, float, float);
 

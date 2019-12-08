@@ -22,9 +22,10 @@
 
 #define deathzoom(x,zoom) (float)(x>0?(((x-zoom)<0)?0:x):((x+zoom)>0?0:x))
 
-#define TOP 	 1
-#define MIDDLE 3
-#define BOTTOM 2
+#define TOP 	 	1
+#define MIDDLE 	3
+#define BOTTOM 	2
+#define NDJLOST 0
 
 typedef __packed struct
 {

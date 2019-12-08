@@ -25,9 +25,34 @@ void PID_Init(KP p, KI i, KD d, PID_Def pid)
 	pid->PID_LastError = 0.0;
 	pid->PID_SetValue = 0.0;
 	
-	pid->IntegralMax = 6000.0;
-	pid->OutMax = 1000.0;
+	pid->IntegralMax = 8000.0;
+	pid->OutMax = 1500.0;
 	
+}
+
+/**
+ * 设置输出最大限幅<=2500
+ * default 1500
+ */
+void PID_Outmax_Set(uint16_t outmax,PID_Def pid)
+{
+	pid->OutMax = (float)outmax;
+	
+	if(pid->OutMax>=2500.0f)
+		pid->OutMax = 2500.0f;
+	
+}
+
+/*
+ * 设置积分限幅<=10000
+ * default 8000
+ */
+void PID_Integralmax_Set(uint16_t intmax, PID_Def pid)
+{
+	pid->IntegralMax = (float)intmax;
+	
+	if(pid->IntegralMax>=10000.0f)
+		pid->IntegralMax = 10000.0f;
 }
 
 
@@ -42,7 +67,6 @@ void PID_Init(KP p, KI i, KD d, PID_Def pid)
  */
 void PID_Ctrl(float Setvalue, float Actualvalue, PID_Def pid)
 {
-//	int16_t PID_out;
 	
 	pid->PID_SetValue = Setvalue;
 	pid->PID_ActuallValue = Actualvalue;
@@ -58,8 +82,6 @@ void PID_Ctrl(float Setvalue, float Actualvalue, PID_Def pid)
 	pid->PID_LastError = pid->PID_Error;
 	
 	pid->out = LIMIT(pid->out, -pid->OutMax, pid->OutMax);
-	
-//	pid->out = *Outvalue;
 	
 }
 
