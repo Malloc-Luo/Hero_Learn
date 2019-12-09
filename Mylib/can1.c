@@ -153,7 +153,7 @@ void Can1_Send_Data_to_Frict(can1_senddata *can1data)
 		can1txmsg.Data[3] = 0;
 	}
 	
-	if(up_frict_power_flag == BOTTOM)
+	if(up_frict_power_flag == 0)
 	{
 		can1txmsg.Data[4] = 0;
 		can1txmsg.Data[5] = 0;
