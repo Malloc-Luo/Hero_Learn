@@ -121,7 +121,8 @@ void Timer_333Hz(void)
 
 void Timer_250Hz(void)
 {
-	Friction_control();
+//	Friction_control();
+	Shoot();
 }
 
 void Timer_200Hz(void)
