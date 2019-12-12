@@ -58,10 +58,10 @@ void Init_All(void)
 	Switch_Init();	
 	Can2_Init();
 	CAN1_Init();
-	I2C1_Soft_Init();  
-	DelayMs(100);                       
-	Mpu6050Top_Init(1000, 40);          	
-	DelayMs(100);                       
-	Mpu6050Top_CalOffset_Gyro();   	
+//	I2C1_Soft_Init();  
+//	DelayMs(100);                       
+//	Mpu6050Top_Init(1000, 40);          	
+//	DelayMs(100);                       
+//	Mpu6050Top_CalOffset_Gyro();   	
 	
 }

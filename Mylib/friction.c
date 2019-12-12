@@ -18,10 +18,16 @@ void Friction_control(void)
 
 	left_right_frict_power_flag = NDJ6.ch[5];
 	
+	if(left_right_frict_power_flag == BOTTOM || left_right_frict_power_flag == 0)
+	{
+		right_setvalue = 0;
+		left_setvalue = 0;
+	}
+	
 	if(pidinitflag)
 	{
-		PID_Init(1.5, 0.1, 0, &Frict_right);
-		PID_Init(1.5, 0.1, 0, &Frict_left);
+		PID_Init(9, 0.1, 0, &Frict_right);
+		PID_Init(9, 0.1, 0, &Frict_left);
 		pidinitflag = 0;
 	}
 	
@@ -33,8 +39,8 @@ void Friction_control(void)
 	PID_Ctrl(left_setvalue, left_actualvalue, &Frict_left);
 	
 	
-	can1Senddata.motor3508right_out = (int16_t)Frict_right.out;
-	can1Senddata.motor3508left_out = (int16_t)Frict_left.out;
+	can1Senddata.motor3508right_out = (int16_t)(Frict_right.out + 0.5f);
+	can1Senddata.motor3508left_out = (int16_t)(Frict_left.out + 0.5f);
 	
 	Can1_Send_Data_to_Frict(&can1Senddata);
 }
@@ -45,7 +51,7 @@ static PID_Config top_frict_outer;
 
 void Trigger_control(Top_Frict_Mode mode)
 {
-	float top_inner_setvalue = 8500.0, top_outer_setvalue = 0.0;
+	static float top_inner_setvalue = 9500.0, top_outer_setvalue = 0.0;
 	float top_inner_actualvalue = 0.0, top_outer_actualvalue = 0.0;
 	static u8 pidinitflag = 1 ;
 	static u8 last_mode = 0;
@@ -53,17 +59,24 @@ void Trigger_control(Top_Frict_Mode mode)
 	
 	top_inner_actualvalue = can1Feedback.TriggerSpeed;
 	
-	last_mode = mode;
+	if((up_frict_power_flag == 0 && mode ==SPEED))
+		top_inner_setvalue = 0;
+	
+	if(up_frict_power_flag == 1 && mode == SPEED)
+		top_inner_setvalue = 8500;
 	
 	//速度环模式
 	if(mode == SPEED)
 	{
+		if(shootflag == WAIT)
+			top_inner_setvalue = 0;
+		
 		if(last_mode == POSITION)
 			pidinitflag = 1;
 		
 		if(pidinitflag)
 		{
-			PID_Init(2.5, 0.1, 0, &top_frict_inner);
+			PID_Init(10, 0.1, 0, &top_frict_inner);
 			pidinitflag = 0;
 		}
 		
@@ -81,16 +94,15 @@ void Trigger_control(Top_Frict_Mode mode)
 		
 		if(pidinitflag)
 		{
-			PID_Init(2.5, 0.1, 0, &top_frict_inner);
-			PID_Init(2.5, 0.1, 0, &top_frict_outer);
+			PID_Init(10, 0.0, 0, &top_frict_inner);
+			PID_Init(0.3, 0.0, 0, &top_frict_outer);
 			pidinitflag = 0;
 		}
 		
-		top_inner_setvalue = top_fric t_outer.out;
+		top_inner_setvalue = top_frict_outer.out;
 		
 		PID_Ctrl(top_inner_setvalue, top_inner_actualvalue, &top_frict_inner);
-		can1Senddata.motorup_out = (int16_t)Frict_up.out;
-		
+//		can1Senddata.motorup_out = (int16_t)Frict_up.out;
 		counter ++;
 		if(counter >= 2)
 		{
@@ -100,6 +112,8 @@ void Trigger_control(Top_Frict_Mode mode)
 			PID_Ctrl(top_outer_setvalue, top_outer_actualvalue, &top_frict_outer);
 		}
 	}
+	last_mode = mode;
+	can1Senddata.motorup_out = (int16_t)top_frict_inner.out;
 }
 
 void Switch_Init(void)
@@ -139,7 +153,7 @@ void Switch_Init(void)
 int shoot_count=0;
 void EXTI9_5_IRQHandler(void)
 {
-	DelayUs(100);
+	DelayUs(10);
 	if(EXTI_GetITStatus(EXTI_Line7) != RESET )
 	{
 		if (GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_7))
@@ -150,26 +164,54 @@ void EXTI9_5_IRQHandler(void)
 	EXTI_ClearITPendingBit(EXTI_Line7); //清除LINE5上的中断标志位
 }
 
+
+
 void Shoot(void)
 {
+	static u8 flag = 1;
+	static u8 pauseflag = 0, flag2 = 1;
 	//if(NDJ6.ch[8] == 1 && NDJ6.ch_last[8] == 0/*|| NDJ6.ch[4] != BOTTOM*/)
 	//if( NDJ6.ch[4] != BOTTOM)
-	if(NDJ6.ch[4] == MIDDLE && NDJ6.ch_last[4] == BOTTOM)
+	if((NDJ6.ch[4] == MIDDLE && NDJ6.ch_last[4] == BOTTOM) || (NDJ6.ch[8] == 1 && NDJ6.ch_last[8] == 0))
 		up_frict_power_flag = 1;
 		
 	//if(NDJ6.ch[9] == 1 && NDJ6.ch_last[9] == 0/*|| NDJ6.ch[4] == BOTTOM*/)
 	//if(NDJ6.ch[4] == BOTTOM)
-	if(NDJ6.ch[4] == BOTTOM && NDJ6.ch_last[4] == MIDDLE)
+	if((NDJ6.ch[4] == BOTTOM && NDJ6.ch_last[4] == MIDDLE) || (NDJ6.ch[9] == 1 && NDJ6.ch_last[9] == 0))
 		up_frict_power_flag = 0;
+	
+	if(NDJ6.ch_last[4] == TOP && NDJ6.ch[4] == MIDDLE)
+	{
+		shootflag = FIRE;
+		flag = 1;
+		flag2 = 1;
+	}
 	 
 	if(shootflag == WAIT)
 	{
-		up_frict_power_flag = 0;
-		Trigger_control(POSITION);
+//		if(flag)
+//		{
+//			up_frict_power_flag = 0;
+//			flag = 0;
+//		}
+		if(flag2)
+		{
+			if(ABS_int(can1Feedback.TriggerSpeed)<10)
+			{
+				flag2 = 0;
+				pauseflag = 1;
+				up_frict_power_flag = 0;
+			}
+			Trigger_control(SPEED);
+		}
+		if(pauseflag == 1)
+			Trigger_control(POSITION); 
 	}
 	
 	if(shootflag == FIRE)
+	{
 		Trigger_control(SPEED);
+	}
 	
 	Friction_control();
 		

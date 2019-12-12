@@ -145,15 +145,15 @@ void Can1_Send_Data_to_Frict(can1_senddata *can1data)
 	can1txmsg.Data[4] = (u8)((int16_t)can1data->motorup_out>>8);
 	can1txmsg.Data[5] = (u8)((int16_t)can1data->motorup_out);
 	
-	if(left_right_frict_power_flag == BOTTOM)
-	{
-		can1txmsg.Data[0] = 0;
-		can1txmsg.Data[1] = 0;
-		can1txmsg.Data[2] = 0;
-		can1txmsg.Data[3] = 0;
-	}
+//	if(left_right_frict_power_flag == BOTTOM)
+//	{
+//		can1txmsg.Data[0] = 0;
+//		can1txmsg.Data[1] = 0;
+//		can1txmsg.Data[2] = 0;
+//		can1txmsg.Data[3] = 0;
+//	}
 	
-	if(up_frict_power_flag == 0)
+	if(up_frict_power_flag == 0 && shootflag == WAIT)
 	{
 		can1txmsg.Data[4] = 0;
 		can1txmsg.Data[5] = 0;

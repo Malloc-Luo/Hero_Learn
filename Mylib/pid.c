@@ -25,8 +25,8 @@ void PID_Init(KP p, KI i, KD d, PID_Def pid)
 	pid->PID_LastError = 0.0;
 	pid->PID_SetValue = 0.0;
 	
-	pid->IntegralMax = 6000.0;
-	pid->OutMax = 1500.0;
+	pid->IntegralMax = 5000.0;
+	pid->OutMax = 1800.0;
 	
 }
 
